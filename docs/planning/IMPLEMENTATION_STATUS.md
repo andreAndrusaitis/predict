@@ -7,7 +7,8 @@ Last updated: 2026-09-29
 - ✅ Monorepo manifests, local service Compose file, environment example, baseline Prisma schema and initial SQL migration added.
 - ✅ Deterministic Python simulation kernel and repeatability/bounds tests added.
 - 🟡 NestJS and Next.js application shells have passed TypeScript validation; build validation is in progress.
-- ⬜ Identity, tenant isolation, migrations, queue worker, SSE and product modules remain pending.
+- 🟡 Tenant context and RBAC primitives are implemented and tested; OIDC validation and persistence integration remain pending.
+- ⬜ Queue worker, SSE and product modules remain pending.
 - ⬜ Model gateway, Monte Carlo, calibration, observability and production hardening remain pending.
 
 Decisions: BullMQ/Redis is the MVP orchestration boundary; FastAPI/Python is computation-only; LLM output is structured and cannot write agent state directly.
