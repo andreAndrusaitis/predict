@@ -11,6 +11,7 @@ Last updated: 2026-09-29
 - 🟡 Tenant context and RBAC primitives are implemented and tested; OIDC validation and persistence integration remain pending.
 - 🟡 Decision creation and immutable scenario publication services are implemented and tested; REST DTO/controller and live database integration remain pending.
 - 🟡 Idempotent worker orchestration contract and unit tests are implemented; BullMQ runtime wiring, Prisma repository and SSE remain pending.
+- 🟡 Run creation now freezes and hashes scenario input with idempotency before queueing; concrete BullMQ adapter, outbox and SSE remain pending.
 - 🟡 Provider-neutral model gateway, structured decision contract, budget enforcement and deterministic fallback are implemented; provider adapters, prompt registry and tracing remain pending.
 - ⬜ Calibration, observability and production hardening remain pending.
 

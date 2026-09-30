@@ -94,6 +94,7 @@ model SimulationRun {
   engineVersion     String
   specificationHash String
   specification     Json
+  idempotencyKey    String?
   createdAt         DateTime  @default(now())
   startedAt         DateTime?
   finishedAt        DateTime?
@@ -101,5 +102,6 @@ model SimulationRun {
   scenario          Scenario  @relation(fields: [scenarioId], references: [id], onDelete: Restrict)
   @@index([scenarioId, createdAt])
   @@index([status, createdAt])
+  @@unique([scenarioId, idempotencyKey])
 }
 
