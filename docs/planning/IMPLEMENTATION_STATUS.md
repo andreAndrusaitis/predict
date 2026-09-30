@@ -9,7 +9,8 @@ Last updated: 2026-09-29
 - 🟡 NestJS and Next.js application shells have passed TypeScript validation; build validation is in progress.
 - 🟡 Tenant context and RBAC primitives are implemented and tested; OIDC validation and persistence integration remain pending.
 - 🟡 Idempotent worker orchestration contract and unit tests are implemented; BullMQ runtime wiring, Prisma repository and SSE remain pending.
-- ⬜ Model gateway, Monte Carlo, calibration, observability and production hardening remain pending.
+- 🟡 Provider-neutral model gateway, structured decision contract, budget enforcement and deterministic fallback are implemented; provider adapters, prompt registry and tracing remain pending.
+- ⬜ Calibration, observability and production hardening remain pending.
 
 Decisions: BullMQ/Redis is the MVP orchestration boundary; FastAPI/Python is computation-only; LLM output is structured and cannot write agent state directly.
 
