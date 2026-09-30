@@ -6,7 +6,8 @@ Last updated: 2026-09-29
 - ✅ Repository initialized on `feat/project-foundation`.
 - 🟡 Prisma client/service and simulation-run repository are implemented; migrations still await application against PostgreSQL.
 - ✅ Deterministic Python kernel now supports staged events, social edges, simultaneous transitions and reproducible Monte Carlo summaries.
-- 🟡 NestJS and Next.js application shells have passed TypeScript validation; build validation is in progress.
+- ✅ NestJS and Next.js application shells have passed TypeScript validation and production build validation.
+- ✅ GitHub Actions CI validates Prisma, TypeScript quality/build, Python engine tests and Compose configuration.
 - 🟡 Tenant context and RBAC primitives are implemented and tested; OIDC validation and persistence integration remain pending.
 - 🟡 Decision creation and immutable scenario publication services are implemented and tested; REST DTO/controller and live database integration remain pending.
 - 🟡 Idempotent worker orchestration contract and unit tests are implemented; BullMQ runtime wiring, Prisma repository and SSE remain pending.
