@@ -1,0 +1,12 @@
+node_modules/
+.turbo/
+dist/
+.next/
+coverage/
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+!.env.example
+*.extracted.txt
+

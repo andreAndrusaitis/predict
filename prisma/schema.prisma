@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrganizationRole { OWNER ADMIN MODELER REVIEWER VIEWER }
+enum DecisionStatus { DRAFT PUBLISHED ARCHIVED }
+enum RunStatus { PENDING RUNNING CANCEL_REQUESTED SUCCEEDED FAILED CANCELLED }
+
+model User {
+  id        String               @id @default(uuid())
+  email     String               @unique
+  createdAt DateTime             @default(now())
+  memberships OrganizationMember[]
+}
+
+model Organization {
+  id        String               @id @default(uuid())
+  name      String
+  createdAt DateTime             @default(now())
+  members   OrganizationMember[]
+  projects  Project[]
+}
+
+model OrganizationMember {
+  organizationId String
+  userId         String
+  role           OrganizationRole @default(VIEWER)
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([organizationId, userId])
+}
+
+model Project {
+  id             String       @id @default(uuid())
+  organizationId String
+  name           String
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  decisions      Decision[]
+  @@index([organizationId, createdAt])
+}
+
+model Decision {
+  id        String         @id @default(uuid())
+  projectId String
+  title     String
+  status    DecisionStatus @default(DRAFT)
+  createdAt DateTime       @default(now())
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  scenarios Scenario[]
+  @@index([projectId, createdAt])
+}
+
+model Scenario {
+  id         String   @id @default(uuid())
+  decisionId String
+  version    Int
+  spec       Json
+  createdAt  DateTime @default(now())
+  decision   Decision @relation(fields: [decisionId], references: [id], onDelete: Cascade)
+  runs       SimulationRun[]
+  @@unique([decisionId, version])
+}
+
+model SimulationRun {
+  id                String    @id @default(uuid())
+  scenarioId        String
+  status            RunStatus @default(PENDING)
+  seed              Int
+  engineVersion     String
+  specificationHash String
+  createdAt         DateTime  @default(now())
+  startedAt         DateTime?
+  finishedAt        DateTime?
+  result            Json?
+  scenario          Scenario  @relation(fields: [scenarioId], references: [id], onDelete: Restrict)
+  @@index([scenarioId, createdAt])
+  @@index([status, createdAt])
+}
+
