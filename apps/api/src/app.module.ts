@@ -7,7 +7,9 @@ import { PrismaService } from "./database/prisma.service";
 import { SimulationRunRepository } from "./database/simulation-run.repository";
 import { DecisionService } from "./decisions/decision.service";
 import { DecisionController } from "./decisions/decision.controller";
+import { BullMqRunQueue } from "./simulations/bullmq-run.queue";
+import { RUN_QUEUE, SimulationRunService } from "./simulations/simulation-run.service";
 
-@Module({ controllers: [AppController, DecisionController], providers: [PrismaService, SimulationRunRepository, DecisionService, { provide: APP_GUARD, useClass: TenantContextGuard }, { provide: APP_GUARD, useClass: PermissionGuard }] })
+@Module({ controllers: [AppController, DecisionController], providers: [PrismaService, SimulationRunRepository, DecisionService, SimulationRunService, { provide: RUN_QUEUE, useClass: BullMqRunQueue }, { provide: APP_GUARD, useClass: TenantContextGuard }, { provide: APP_GUARD, useClass: PermissionGuard }] })
 export class AppModule {}
 

@@ -35,6 +35,9 @@ importers:
       '@prisma/client':
         specifier: 6.19.0
         version: 6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3)
+      bullmq:
+        specifier: ^5.34.0
+        version: 5.81.5(supports-color@8.1.1)
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2

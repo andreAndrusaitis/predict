@@ -1,9 +1,10 @@
 import { createHash } from "node:crypto";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import type { Prisma } from "@prisma/client";
 import { PrismaService } from "../database/prisma.service";
 
 export interface RunQueue { enqueue(runId: string, correlationId: string): Promise<void>; }
+export const RUN_QUEUE = Symbol("RUN_QUEUE");
 export interface StartRunInput { scenarioId: string; seed: number; idempotencyKey?: string; correlationId: string; }
 
 function canonicalize(value: unknown): string {
@@ -17,7 +18,7 @@ function canonicalize(value: unknown): string {
 
 @Injectable()
 export class SimulationRunService {
-  constructor(private readonly prisma: PrismaService, private readonly queue: RunQueue) {}
+  constructor(private readonly prisma: PrismaService, @Inject(RUN_QUEUE) private readonly queue: RunQueue) {}
 
   async start(organizationId: string, input: StartRunInput) {
     const run = await this.prisma.$transaction(async (transaction) => {
