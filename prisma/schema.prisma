@@ -7,9 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum OrganizationRole { OWNER ADMIN MODELER REVIEWER VIEWER }
-enum DecisionStatus { DRAFT PUBLISHED ARCHIVED }
-enum RunStatus { PENDING RUNNING CANCEL_REQUESTED SUCCEEDED FAILED CANCELLED }
+enum OrganizationRole {
+  OWNER
+  ADMIN
+  MODELER
+  REVIEWER
+  VIEWER
+}
+
+enum DecisionStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum RunStatus {
+  PENDING
+  RUNNING
+  CANCEL_REQUESTED
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
 
 model User {
   id        String               @id @default(uuid())
@@ -74,6 +93,7 @@ model SimulationRun {
   seed              Int
   engineVersion     String
   specificationHash String
+  specification     Json
   createdAt         DateTime  @default(now())
   startedAt         DateTime?
   finishedAt        DateTime?
