@@ -20,6 +20,30 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    env_file:
+      - path: .env
+        required: false
+    ports: ["3001:3001"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/v1}
+    ports: ["3000:3000"]
+    depends_on: [api]
+  simulation-engine:
+    build:
+      context: .
+      dockerfile: services/simulation-engine/Dockerfile
+    ports: ["8000:8000"]
 volumes:
   postgres-data:
 
