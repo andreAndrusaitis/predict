@@ -1,39 +1,67 @@
-# Predict
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/vitrine/capa-escuro.svg">
+  <img alt="predict: simulação de cenários com populações sintéticas" src="docs/vitrine/capa-claro.svg">
+</picture>
 
-Predict is a decision-intelligence platform for comparing simulated scenarios with synthetic populations. It combines deterministic agent-based modelling, social networks, controlled randomness and optional structured AI reasoning. A simulated frequency is not represented as a real-world probability unless the model is calibrated for that use.
+Uma plataforma para testar hipóteses antes de virarem decisões. O predict cria uma população sintética, aplica um cenário, roda centenas de simulações com sementes controladas e mostra a **distribuição** dos resultados, e não uma resposta única.
 
-## Architecture
+> **Em construção.** O motor de simulação funciona e é testado. A API, o worker e as regras de acesso têm a base pronta. A interface é uma página de apresentação, e ainda não há login nem fluxo completo para o usuário.
 
-- `apps/web`: Next.js product interface.
-- `apps/api`: NestJS transactional API and public domain boundary.
-- `apps/worker`: BullMQ orchestration boundary.
-- `services/simulation-engine`: Python scientific computation service.
-- `packages`: shared contracts and configuration.
-- `prisma`: PostgreSQL schema and migrations.
+## Um exemplo
 
-## Current readiness
+Uma equipe quer lançar uma ideia e tem dois caminhos: anunciar para todo mundo ou convencer só as pessoas mais influentes.
 
-The repository contains a working TypeScript/API/worker foundation, deterministic Python engine, database migrations and local test suite. It is **not yet an end-user-ready product**: OIDC login, account registration, a concrete OpenAI provider adapter, database migration application, and web decision workflows remain to be completed.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/vitrine/cenarios-escuro.svg">
+  <img alt="Adoção média por rodada. No fim, 24% com anúncio para todos e 30% convencendo só os influentes" src="docs/vitrine/cenarios-claro.svg">
+</picture>
 
-## Local development
+| Cenário | 5º percentil | Mediana | 95º percentil |
+|---|---:|---:|---:|
+| Anúncio para todos | 20% | 24% | 29% |
+| Só os influentes | 26% | 30% | 34% |
 
-Prerequisites: Node 22+, pnpm 11+, Python 3.12+ and Docker Desktop.
+O anúncio geral cresce mais rápido, e o caminho pelos influentes passa na frente depois da metade. As faixas ainda se encostam, e é isso que o gráfico deixa claro. Os dados são fictícios e o código está em [comparar_cenarios.py](services/simulation-engine/examples/comparar_cenarios.py).
 
-1. Copy `.env.example` to `.env`.
-2. Set `OPENAI_API_KEY` only when the provider adapter is enabled. It must never be prefixed with `NEXT_PUBLIC_`.
-3. Install dependencies: `pnpm install`.
-4. Start PostgreSQL/pgvector and Redis: `docker compose up -d postgres redis`.
-5. Apply database migrations: `pnpm exec prisma migrate deploy --schema prisma/schema.prisma`.
-6. Generate Prisma client: `pnpm exec prisma generate --schema prisma/schema.prisma`.
-7. In separate terminals, run `pnpm --filter @predict/api start`, `pnpm --filter @predict/web dev`, and the worker runtime once its repository/engine adapters are configured.
+```bash
+cd services/simulation-engine
+python -m examples.comparar_cenarios --saida ../../docs/vitrine
+```
 
-## Verification
+## Arquitetura
 
-Run `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm exec prisma validate --schema prisma/schema.prisma`, and `python -m unittest discover tests` from `services/simulation-engine`.
+```mermaid
+flowchart LR
+  W[Web em Next.js] --> A[API em NestJS]
+  A --> P[(PostgreSQL)]
+  A --> Q[Fila BullMQ e Redis]
+  Q --> K[Worker]
+  K --> M[Motor em Python]
+  M --> K
+  K --> P
+  L[Modelo de linguagem, opcional] -. saída estruturada .-> K
+```
 
-## API keys and users
+| Parte | Tecnologia | Situação |
+|---|---|---|
+| Motor de simulação | Python | Funcionando, com testes |
+| API | NestJS e Prisma | Serviços e permissões testados; integração em andamento |
+| Worker | BullMQ e Redis | Orquestração testada; adaptadores em andamento |
+| Web | Next.js | Página de apresentação |
 
-The key belongs only to the backend environment. The web application must call the API; it never receives database or provider credentials. User registration/login is intentionally not implemented with a fake local-password flow: the target is OIDC/OAuth2, then organization memberships and roles are loaded server-side. The existing tenant/RBAC guards are ready to enforce that principal after the OIDC adapter is added.
+## Decisões
 
-Detailed engineering plan: `docs/planning/MASTER_PLAN.md`.
+- **Reprodutível.** A mesma semente gera o mesmo resultado, e cada execução guarda o cenário que a originou.
+- **A IA não manda no resultado.** O modelo de linguagem só entrega saídas estruturadas e não altera o estado da simulação.
+- **Honesto com a incerteza.** Frequência simulada não é apresentada como probabilidade do mundo real.
+- **Fronteiras claras.** O motor só calcula. Regras, acesso e persistência ficam na API.
 
+## Saiba mais
+
+- [Como rodar](docs/desenvolvimento.md)
+- [Situação da implementação](docs/planning/IMPLEMENTATION_STATUS.md)
+- [Decisões de arquitetura](docs/adr)
+
+## Licença
+
+Código visível apenas para leitura. Todos os direitos reservados: não é permitido usar, copiar ou distribuir sem autorização. Veja [LICENSE](LICENSE).
